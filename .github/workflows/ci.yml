@@ -1,0 +1,16 @@
+name: ci
+on: [push, pull_request]
+jobs:
+  test:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: unit tests (Windows PowerShell 5.1)
+        shell: powershell
+        run: .\tests\run-tests.ps1
+      - name: gui smoke test
+        shell: powershell
+        run: .\winharden-gui.ps1 -SelfTest -Png -PngPath $env:RUNNER_TEMP\wh.png
+      - name: json output parses
+        shell: powershell
+        run: .\winharden.ps1 -Json | ConvertFrom-Json | Out-Null
